@@ -7,7 +7,7 @@
 Official implementation of:
 
 > **From histology to spatial transcriptomics: establishing a lightweight single-patch baseline**  
-> *BMC Bioinformatics*, 2026  
+> *BMC Bioinformatics*, 2026
 > DOI: https://doi.org/10.1186/s12859-026-06447-7
 
 This repository trains lightweight single-patch models that predict spot-level gene expression from H&E histology patches. The main baseline uses EfficientNet-B0, controlled random seeds, fixed train/validation splits, and morphology-preserving augmentation.
@@ -24,7 +24,7 @@ This repository trains lightweight single-patch models that predict spot-level g
 
 ```text
 MAI-spatial-transcriptomics/
-├── mai_spatial/                 # Reusable package code
+├── mai_spatial/                  # Reusable package code
 │   ├── data.py                   # Training CSV datasets and gene-column helpers
 │   ├── engine.py                 # Train/eval/inference loops
 │   ├── experiments.py            # Shared experiment runners
@@ -159,6 +159,23 @@ python -m scripts.export_cluster_samples \
 
 Training and experiment outputs are written under `runs/` by default. Generated patches and model checkpoints are ignored by Git.
 
+## Results
+
+Evaluated on the human liver Visium dataset (GSE240429). Slide 3 is the held-out test set.
+Values are mean gene-wise Pearson correlation (PCC) over 3 random seeds.
+
+| Method | Params | MG | HEG | HVG | # Genes (PCC ≥ 0.3) |
+|---|---|---|---|---|---|
+| HisToGene† | – | 0.097 | 0.072 | 0.071 | – |
+| ST-Net† | – | 0.099 | 0.126 | 0.091 | – |
+| BLEEP† | 26M | 0.217 | 0.175 | 0.173 | 20 |
+| ResNet-18 | 11.7M | 0.234 | 0.271 | 0.215 | 40 |
+| DenseNet-121 | 8M | 0.265 | 0.295 | 0.236 | 36 |
+| EfficientNet-B7 | 66M | **0.286** | 0.305 | 0.239 | 41 |
+| **EfficientNet-B0** | **5.3M** | 0.278 | **0.310** | **0.240** | **50** |
+
+† Reported by Xie et al. (BLEEP, NeurIPS 2023).
+
 ## Citation
 
 ```bibtex
@@ -167,7 +184,8 @@ Training and experiment outputs are written under `runs/` by default. Generated 
   author={Jang, Hyungyum and Shin, Hyunsoo and Lee, Hawon and Jang, Yena and Jung, Sunghoon and Jeon, Minji},
   journal={BMC Bioinformatics},
   year={2026},
-  publisher={Springer}
+  publisher={Springer},
+  volume={27}, pages={168}, doi={10.1186/s12859-026-06447-7},
 }
 ```
 
